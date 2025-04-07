@@ -1,40 +1,35 @@
 // controllers/notificationController.js
 const Notification = require('../models/Notification');
+const User = require('../models/User');
 
 exports.getNotifications = async (req, res) => {
   try {
-    const userId = '67f327b2495c2f1f6f0bd4f5';
-
-    const page = parseInt(req.query.page) || 1;   
-    const limit = parseInt(req.query.limit) || 10; 
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
-     // Get total count for that user
-     const total = await Notification.countDocuments({ recipient: userId });
-
-    // Get notifications
-    const notifications = await Notification.find({ recipient: userId })
-      .populate('sender', 'name')
+    // For demo, we'll use the hardcoded user
+    const mainUser = await User.findOne({ email: 'abc@example.com' });
+    
+    const notifications = await Notification.find({ recipient: mainUser._id })
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(limit);
-      console.log(notifications);
+      .limit(limit)
+      .populate('sender', 'name');
 
-     // Calculate pagination metadata
-     const totalPages = Math.ceil(total / limit);
-     const hasMore = page < totalPages;
-     
-     res.status(200).json({
-       data: notifications,
-       pagination: {
-         total,
-         page,
-         limit,
-         pages: totalPages,
-         hasMore
-       }
-     });
-   } catch (error) {
+    const total = await Notification.countDocuments({ recipient: mainUser._id });
+
+    res.status(200).json({
+      success: true,
+      data: notifications,
+      pagination: {
+        page,
+        limit,
+        total,
+        pages: Math.ceil(total / limit)
+      }
+    });
+  } catch (error) {
     res.status(500).json({
       success: false,
       error: error.message
@@ -46,7 +41,7 @@ exports.markAsRead = async (req, res) => {
   try {
     const notification = await Notification.findByIdAndUpdate(
       req.params.id,
-      { read: true },
+      { isRead: true },
       { new: true }
     );
 
@@ -71,11 +66,11 @@ exports.markAsRead = async (req, res) => {
 
 exports.markAllAsRead = async (req, res) => {
   try {
-    const userId = "67f32bbe495c2f1f6f0bd4f5";
-
+    const mainUser = await User.findOne({ email: 'abc@example.com' });
+    
     await Notification.updateMany(
-      { recipient: userId, read: false },
-      { read: true }
+      { recipient: mainUser._id, isRead: false },
+      { $set: { isRead: true } }
     );
 
     res.status(200).json({
