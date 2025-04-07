@@ -41,8 +41,8 @@ exports.markAsRead = async (req, res) => {
   try {
     const notification = await Notification.findByIdAndUpdate(
       req.params.id,
-      { isRead: true },
-      { new: true }
+      {read : false},
+      { $set: { read: true } }
     );
 
     if (!notification) {
@@ -69,8 +69,8 @@ exports.markAllAsRead = async (req, res) => {
     const mainUser = await User.findOne({ email: 'abc@example.com' });
     
     await Notification.updateMany(
-      { recipient: mainUser._id, isRead: false },
-      { $set: { isRead: true } }
+      { recipient: mainUser._id, read: false },
+      { $set: { read: true } }
     );
 
     res.status(200).json({
