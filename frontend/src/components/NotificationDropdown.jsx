@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
-  Bell, Check, User, Heart, MessageSquare,
+  Bell, User, Heart, MessageSquare,
   Tag, Lock, Users, Search, Settings, Home
 } from 'react-feather';
 
@@ -12,12 +12,20 @@ const NotificationSystem = () => {
   const [hasMore, setHasMore] = useState(true);
   const limit = 10;
 
-  const fetchNotifications = async () => {
+ 
+  const fetchNotifications = async (isInitialLoad = false) => {
     try {
+      setLoading(true);
       const response = await axios.get(
-        `http://localhost:5000/api/notifications?page=${page}&limit=${limit}`
+        `http://localhost:5000/api/notifications?page=${isInitialLoad ? 1 : page}&limit=${limit}`
       );
-      setNotifications(prev => [...prev, ...response.data.data]);
+      
+      if (isInitialLoad) {
+        setNotifications(response.data.data);
+      } else {
+        setNotifications(prev => [...prev, ...response.data.data]);
+      }
+      
       setHasMore(response.data.pagination.page < response.data.pagination.pages);
     } catch (error) {
       console.error('Error fetching notifications:', error);
@@ -26,8 +34,16 @@ const NotificationSystem = () => {
     }
   };
 
+  // Initial load
   useEffect(() => {
-    fetchNotifications();
+    fetchNotifications(true);
+  }, []);
+
+  // Load more
+  useEffect(() => {
+    if (page > 1) {
+      fetchNotifications();
+    }
   }, [page]);
 
   const markAsRead = async (id) => {
@@ -68,14 +84,15 @@ const NotificationSystem = () => {
   return (
     <div className="max-w-4xl mx-auto p-6">
       {/* Header */}
-      <header className="flex justify-around mb-8 border-2 border-blue-600 rounded-lg ">
-        <div className="flex items-center space-x-4">
+      <header className="flex justify-between items-center mb-8 p-4 bg-white rounded-lg shadow-sm">
+          <h1 className="text-xl font-bold text-gray-800">Check Your Notifications</h1>
+          <div className="flex items-center space-x-4">
           <div className="flex space-x-3">
             <button className="p-2 rounded-full hover:bg-gray-100 transition-colors">
               <Home className="w-5 h-5 text-gray-600" />
             </button>
             <button className="p-2 rounded-full hover:bg-gray-100 transition-colors">
-              <Search className="w-5 h-5 text-gray-600" />
+              <User className="w-5 h-5 text-gray-600" />
             </button>
             <button className="p-2 rounded-full hover:bg-gray-100 transition-colors">
               <Settings className="w-5 h-5 text-gray-600" />
@@ -97,24 +114,18 @@ const NotificationSystem = () => {
 
       {/* Notifications Panel */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <div className="p-4 border-b border-gray-200 flex justify-between items-center bg-gray-50">
-          <h2 className="font-semibold text-gray-800">Your Notifications</h2>
-          <button 
-            onClick={markAllAsRead}
-            className="text-sm text-blue-600 hover:text-blue-800 font-medium"
-          >
-            Mark all as read
-          </button>
-        </div>
+            <div className="p-4 border-2 border-gray-200 bg-gray-50">
+        <button 
+          onClick={markAllAsRead}
+          className="w-full text-lg text-blue-600 hover:text-blue-800 font-medium py-2 border-4 rounded-lg border-blue-600 hover:border-blue-800"
+        >
+          Mark all as read
+        </button>
+      </div>
 
         <div className="divide-y divide-gray-100">
           {loading && notifications.length === 0 ? (
             <div className="p-8 text-center">
-              <div className="inline-flex space-x-2">
-                <div className="w-3 h-3 bg-gray-300 rounded-full animate-bounce"></div>
-                <div className="w-3 h-3 bg-gray-300 rounded-full animate-bounce delay-100"></div>
-                <div className="w-3 h-3 bg-gray-300 rounded-full animate-bounce delay-200"></div>
-              </div>
               <p className="mt-3 text-gray-500">Loading notifications...</p>
             </div>
           ) : notifications.length === 0 ? (
@@ -153,7 +164,10 @@ const NotificationSystem = () => {
                     <div className="mt-2 flex justify-between items-center">
                       {!notification.read && (
                         <button
-                          onClick={() => markAsRead(notification._id)}
+                        onClick={() => {
+                          markAsRead(notification._id);   
+                          window.alert(`Marked notification for ${notification._id} as read`);  
+                        }}
                           className="text-xs text-gray-400 hover:text-blue-600"
                         >
                           Mark as read
@@ -183,16 +197,5 @@ const NotificationSystem = () => {
   );
 };
 
-const getNotificationActionText = (type) => {
-  const actions = {
-    friend_request: 'View profile',
-    post_like: 'See post',
-    comment: 'View comment',
-    tag: 'See mention',
-    login_alert: 'Review activity',
-    group_invitation: 'View group'
-  };
-  return actions[type] || 'View details';
-};
 
 export default NotificationSystem;
