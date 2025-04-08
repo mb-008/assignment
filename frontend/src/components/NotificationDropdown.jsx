@@ -11,7 +11,7 @@ const NotificationSystem = () => {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const limit = 10;
+  const limit = 2;
 
  
   const fetchNotifications = async (isInitialLoad = false) => {
