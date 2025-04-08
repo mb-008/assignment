@@ -39,8 +39,7 @@ exports.getNotifications = async (req, res) => {
 exports.markAsRead = async (req, res) => {
   try {
     const notification = await Notification.findByIdAndUpdate(
-      req.params.id,
-      {read : false},
+      { _id: req.params.id, read: false },  
       { $set: { read: true } }
     );
 
