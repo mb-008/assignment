@@ -1,4 +1,3 @@
-// controllers/notificationController.js
 const Notification = require('../models/Notification');
 const User = require('../models/User');
 
@@ -8,7 +7,7 @@ exports.getNotifications = async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
-    // For demo, we'll use the hardcoded user
+    // For demo, we'll use this user
     const mainUser = await User.findOne({ email: 'abc@example.com' });
     
     const notifications = await Notification.find({ recipient: mainUser._id })

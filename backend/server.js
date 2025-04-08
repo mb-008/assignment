@@ -1,4 +1,3 @@
-  // server.js
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -20,14 +19,14 @@ mongoose.connect('mongodb://localhost:27017/notification_app')
 // Routes
 app.use('/api/notifications', notificationRoutes);
 
-// Seed data route (for demo purposes)
+// To populate Db
 app.get('/api/seed', async (req, res) => {
   try {
-    // Clear existing data
+    // remove any previous data if it exist
     await User.deleteMany({});
     await Notification.deleteMany({});
 
-    // Create users
+    // Create users for testing
     const mainUser = await User.findOneAndUpdate(
       { email: 'abc@example.com' },
       { name: 'user1', email: 'abc@example.com' },
@@ -43,7 +42,7 @@ app.get('/api/seed', async (req, res) => {
     ]);
 
    
-    // Create notifications
+    // dummy notifications
     const notifications = await Notification.insertMany([
       // friend_request (10)
       { recipient: mainUser._id, type: 'friend_request', sender: users[0]._id, content: 'sent you a friend request.', createdAt: new Date() },

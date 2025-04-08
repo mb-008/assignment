@@ -34,12 +34,12 @@ const NotificationSystem = () => {
     }
   };
 
-  // Initial load
+  // Only for first Initial load
   useEffect(() => {
     fetchNotifications(true);
   }, []);
 
-  // Load more
+  // Load more after the initial load(to remove data redundacny)
   useEffect(() => {
     if (page > 1) {
       fetchNotifications();
@@ -180,7 +180,7 @@ const NotificationSystem = () => {
             ))
           )}
         </div>
-
+        {/* Pagination via Load More */}
         {hasMore && (
           <div className="p-4 border-t border-gray-200 text-center">
             <button
