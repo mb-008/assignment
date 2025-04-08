@@ -11,7 +11,7 @@ const NotificationSystem = () => {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const limit = 2;
+  const limit = 5;
 
  
   const fetchNotifications = async (isInitialLoad = false) => {
@@ -120,12 +120,15 @@ const NotificationSystem = () => {
       {/* Notifications Panel */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mt-4">
             <div className="p-4 border-2 border-gray-200 bg-gray-50">
-        <button 
-          onClick={markAllAsRead}
-          className="w-full text-lg text-blue-600 hover:text-blue-800 font-medium py-2 border-4 rounded-lg border-blue-600 hover:border-blue-800"
-        >
-          Mark all as read
-        </button>
+            <button 
+              onClick={() => {
+                markAllAsRead();  
+                window.alert('Marked all notifications as read'); 
+              }}
+              className="w-full text-lg text-blue-600 hover:text-blue-800 font-medium py-2 border-4 rounded-lg border-blue-600 hover:border-blue-800"
+            >
+              Mark all as read
+            </button>
       </div>
 
         <div className="divide-y divide-gray-100">
