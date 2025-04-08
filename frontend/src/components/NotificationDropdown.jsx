@@ -4,6 +4,7 @@ import {
   Bell, User, Heart, MessageSquare,
   Tag, Lock, Users, Settings, Home
 } from 'react-feather';
+import hyt from "../assets/hyt.png"
 
 const NotificationSystem = () => {
   const [notifications, setNotifications] = useState([]);
@@ -88,8 +89,12 @@ const NotificationSystem = () => {
           <h1 className="text-xl font-bold text-gray-800">Check Your Notifications</h1>
           <div className="flex items-center space-x-4">
           <div className="flex space-x-3">
-            <button className="p-2 rounded-full hover:bg-gray-100 transition-colors">
-              <Home className="w-5 h-5 text-gray-600" />
+          <button className="p-2 rounded-full hover:bg-gray-100 transition-colors">
+              <img 
+                src={hyt}
+                alt="HYT Logo" 
+                className="w-7 h-7 object-contain"
+              />
             </button>
             <button className="p-2 rounded-full hover:bg-gray-100 transition-colors">
               <User className="w-5 h-5 text-gray-600" />
