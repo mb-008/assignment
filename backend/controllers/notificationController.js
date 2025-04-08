@@ -5,7 +5,11 @@ exports.getNotifications = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
-    const skip = (page - 1) * limit;
+    // To enforce a maximum limit so 
+    const maxlimit = Math.min(limit, 20);
+    const skip = (page - 1) * maxlimit;
+
+   
 
     // For demo, we'll use this user
     const mainUser = await User.findOne({ email: 'abc@example.com' });
@@ -13,7 +17,7 @@ exports.getNotifications = async (req, res) => {
     const notifications = await Notification.find({ recipient: mainUser._id })
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(limit)
+      .limit(maxlimit)
       .populate('sender', 'name');
 
     const total = await Notification.countDocuments({ recipient: mainUser._id });
@@ -23,9 +27,9 @@ exports.getNotifications = async (req, res) => {
       data: notifications,
       pagination: {
         page,
-        limit,
+        maxlimit,
         total,
-        pages: Math.ceil(total / limit)
+        pages: Math.ceil(total / maxlimit)
       }
     });
   } catch (error) {
@@ -38,8 +42,10 @@ exports.getNotifications = async (req, res) => {
 
 exports.markAsRead = async (req, res) => {
   try {
+    const mainUser = await User.findOne({ email: 'abc@example.com' });
+
     const notification = await Notification.findByIdAndUpdate(
-      { _id: req.params.id, read: false },  
+      { _id: req.params.id, recipient: mainUser._id, read: false },  
       { $set: { read: true } }
     );
 
