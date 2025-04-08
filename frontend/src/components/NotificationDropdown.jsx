@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
   Bell, User, Heart, MessageSquare,
-  Tag, Lock, Users, Settings, Home
+  Tag, Lock, Users, Settings
 } from 'react-feather';
 import hyt from "../assets/hyt.png"
 
