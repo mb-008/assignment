@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
   Bell, User, Heart, MessageSquare,
-  Tag, Lock, Users, Search, Settings, Home
+  Tag, Lock, Users, Settings, Home
 } from 'react-feather';
 
 const NotificationSystem = () => {
