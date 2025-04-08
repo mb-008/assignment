@@ -84,7 +84,7 @@ const NotificationSystem = () => {
   return (
     <div className="max-w-4xl mx-auto p-6">
       {/* Header */}
-      <header className="flex justify-between items-center mb-8 p-4 bg-white rounded-lg shadow-sm">
+      <header className="sticky top-0 z-50 flex justify-between items-center p-4 bg-white rounded-lg shadow-sm">
           <h1 className="text-xl font-bold text-gray-800">Check Your Notifications</h1>
           <div className="flex items-center space-x-4">
           <div className="flex space-x-3">
@@ -113,7 +113,7 @@ const NotificationSystem = () => {
       </header>
 
       {/* Notifications Panel */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mt-4">
             <div className="p-4 border-2 border-gray-200 bg-gray-50">
         <button 
           onClick={markAllAsRead}
